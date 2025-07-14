@@ -6,10 +6,14 @@ result=""
 
 for domain in $domains; do
 
-	ip=$(host "$domain" | grep "has address" | head -n 1 | cut -d " " -f 4)
+	echo "$domain" | grep "@" > /dev/null && continue
+	echo "$domain" | grep "^localhost" > /dev/null && continue
+	echo "$domain" | grep "^0\." > /dev/null && continue
+
+	ip=$(host "$domain" 2>/dev/null | grep "has address" | head -n 1 | cut -d " " -f 4)
 
 	if [ "$ip" = "" ]; then
-		ip="N/A"
+		continue
 	fi
 
 	echo -e "$ip $domain"
