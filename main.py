@@ -14,19 +14,22 @@ ascii_logo = """
   |_|  \_\___|\___\___/|_| |_| |_____/|_| |_|\___|_|_|
 """
 
-panel = Panel(ascii_logo, title="ReconShell", subtitle="by Luk", style="bold green")
+logo_panel = Panel(ascii_logo, title="ReconShell", subtitle="by Luk", style="green")
+console.print(Align.center(logo_panel))
 
-console.print(Align.center(panel))
+panel_width = 60
 
 menu = """
 [1] Domain Search
 [0] Sair
 """
-console.print(Align.center(Panel(menu, title="Menu", style="bold cyan")))
 
-choice = Prompt.ask("[bold yellow]Selecione uma opção[/]", choices=["1", "0"])
+menu_panel = Panel(menu, subtitle="Menu", style="green", width=panel_width)
+console.print(Align.center(menu_panel))
+
+choice = Prompt.ask("[green]Selecione uma opção[/]", choices=["1", "0"])
 
 if choice == "1":
-	console.print("[bold green] Iniciando Domain Search...[/]")
+	console.print("[yellow]\tIniciando Domain Search...[/]")
 elif choice == "0":
-	console.print("[bold red]Saindo...[/]")
+	console.print("[yellow]\tSaindo...[/]")
