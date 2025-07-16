@@ -62,6 +62,8 @@ def run_domain_search(url: str):
 		return [], err
 
 	rows = []
+	i = 0
+
 	for line in proc.stdout.splitlines():
 		line = line.strip()
 		if not line:
@@ -74,44 +76,44 @@ def run_domain_search(url: str):
 
 			if len(parts) != 2:
 				continue
-
-		ip, domain = parts[0].strip(), parts[1].strip()
-		rows.append((ip, domain))
+		i = i + 1
+		id, ip, domain = i, parts[0].strip(), parts[1].strip()
+		rows.append((id, ip, domain))
 
 	return rows, None
 
 def show_domain_results(url:str, rows):
 	clean_screen()
 	table = Table(title=f"Domains in {url}", show_lines=False)
+	table.add_column("ID", style="yellow")
 	table.add_column("IP", style="red1")
-	table.add_column("Domain", style ="cyan1")
-
-	for ip, domain in rows:
-		table.add_row(ip, domain)
+	table.add_column("Domain", style="cyan1")
+	for id, ip, domain in rows:
+		table.add_row(str(id), ip, domain)
 	CONSOLE.print(table)
 
 ## Application
 
 clean_screen()
-loading_animation(CONSOLE, message_style="[red1]Loading[/red1]", delay_char=0.08, delay_dot=0.15)
+loading_animation(CONSOLE, message_style="[white]Loading[/white]", delay_char=0.08, delay_dot=0.15)
 time.sleep(1)
 clean_screen()
 
 choice = questionary.select(
 	"Select a option:",
 	choices=[
-		"Domain Search",
-		"Exit"
+		"[1] Domain Search",
+		"[2] Exit"
 	]
 ).ask()
 
 
-if choice == "Domain Search":
+if choice == "[1] Domain Search":
 	clean_screen()
-	url = Prompt.ask("[dark_slate_gray2]URL[/]")
+	url = Prompt.ask("[yellow]url[/yellow]")
 	clean_screen()
 
-	CONSOLE.print("[dark_slate_gray2]\nRunning Domain Search...[/]")
+	CONSOLE.print("[yellow]Running Domain Search...[/yellow]")
 
 	rows, err = run_domain_search(url)
 
@@ -124,5 +126,5 @@ if choice == "Domain Search":
 	else:
 		show_domain_results(url, rows)
 
-elif choice == "Exit":
-	CONSOLE.print("[dark_slate_gray2]\tSaindo...[/]")
+elif choice == "[2] Exit":
+	CONSOLE.print("[yellow]\tSaindo...[/yellow]")
