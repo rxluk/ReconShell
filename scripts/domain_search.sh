@@ -2,8 +2,6 @@ url="$1"
 
 domains=$(wget -q -O - "$url" | grep -Eo "https?://[^\"]+" | cut -d "/" -f 3 | sort -u)
 
-result=""
-
 for domain in $domains; do
 
 	echo "$domain" | grep "@" > /dev/null && continue
