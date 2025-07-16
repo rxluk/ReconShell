@@ -10,8 +10,48 @@ from rich.prompt import Prompt
 from rich.text import Text
 from rich.table import Table
 
+## Global Variables
+
+ascii_logo = r"""
+   _____                         _____ _          _ _   
+  |  __ \                       / ____| |        | | |  
+  | |__) |___  ___ ___  _ __   | (___ | |__   ___| | |  
+  |  _  // _ \/ __/ _ \| '_ \   \___ \| '_ \ / _ \ | |  
+  | | \ \  __/ (_| (_) | | | |  ____) | | | |  __/ | |  
+  |_|  \_\___|\___\___/|_| |_| |_____/|_| |_|\___|_|_|  
+"""
+CONSOLE = Console()
+MENU_LOGO = Panel(ascii_logo, title="ReconShell", subtitle="by Luk", style="red1")
 BASE_DIR = Path(__file__).parent
 DOMAIN_SCRIPT = BASE_DIR / "scripts" / "domain_search.sh"
+
+## Utils
+
+def loading_animation(CONSOLE, message_style="Loading", delay_char=0.12, delay_dot=0.6, num_dots=3):
+    styled_message_text = Text.from_markup(message_style, style=None)
+
+    for char_segment in styled_message_text:
+        CONSOLE.print(char_segment, end="")
+        CONSOLE.file.flush()
+        time.sleep(delay_char)
+
+    for _ in range(num_dots):
+        CONSOLE.print(".", end="")
+        CONSOLE.file.flush()
+        time.sleep(delay_dot)
+
+    CONSOLE.print()
+
+def clean_screen():
+	if(os.name == "nt"):
+        	os.system("cls")
+	else:
+        	os.system("clear")
+
+	CONSOLE.print(Align.left(MENU_LOGO))
+
+
+## Options Methods
 
 def run_domain_search(url: str):
 	cmd = ["/bin/bash", str(DOMAIN_SCRIPT), url]
@@ -48,67 +88,17 @@ def show_domain_results(url:str, rows):
 
 	for ip, domain in rows:
 		table.add_row(ip, domain)
-	console.print(table)
+	CONSOLE.print(table)
 
-def loading_animation(console, message_style="Loading", delay_char=0.12, delay_dot=0.6, num_dots=3):
-    styled_message_text = Text.from_markup(message_style, style=None)
-
-    for char_segment in styled_message_text:
-        console.print(char_segment, end="")
-        console.file.flush()
-        time.sleep(delay_char)
-
-    for _ in range(num_dots):
-        console.print(".", end="")
-        console.file.flush()
-        time.sleep(delay_dot)
-
-    console.print()
-
-def clean_screen():
-    time.sleep(1)
-    if(os.name == "nt"):
-        os.system("cls")
-    else:
-        os.system("clear")
+## Application
 
 clean_screen()
-
-console = Console()
-ascii_logo = r"""
-   _____                         _____ _          _ _   
-  |  __ \                       / ____| |        | | |  
-  | |__) |___  ___ ___  _ __   | (___ | |__   ___| | |  
-  |  _  // _ \/ __/ _ \| '_ \   \___ \| '_ \ / _ \ | |  
-  | | \ \  __/ (_| (_) | | | |  ____) | | | |  __/ | |  
-  |_|  \_\___|\___\___/|_| |_| |_____/|_| |_|\___|_|_|  
-
-           >@+                                 )@(    
-          #+*++*+^*^^^^+~==----~=<<)))))((((((]]((>   
-       %@@[)<(<()((<(<))))<*+*^<))(((((<()(()((]]]>   
-        ({)(((]([((((]]]][@@[[[[[[}}}][}{%%#{#}[]]-   
-      -(@%#@@##(@%%@@%)<<<%#}#@@@((((((((((((}((]]    
-     .>]%@@@@@@@@@@@@[<<<[[(]]]((][+                  
-          )@@@@@@@@@@))  [@(     )                    
-          *@@@@@@@@@@@^   *@     +                    
-          @@@@@@@@@@()[*        (*                    
-         #@@@@@@@@@>-                                 
-        }@@@@]>@@@}<                                  
-       ]@@@@@+=}@@(>                                  
-       @@@@@@@@@@#]                                   
-      =@@@@@@@@@@(+                                   
-      +@@@@%]@@@})                                    
-      ^@@@@@@@@@{]-                                   
-"""
-
-logo_panel = Panel(ascii_logo, title="ReconShell", subtitle="by Luk", style="cyan1")
-console.print(Align.left(logo_panel))
-loading_animation(console, message_style="[red1]Loading[/red1]", delay_char=0.08, delay_dot=0.15)
-
+loading_animation(CONSOLE, message_style="[red1]Loading[/red1]", delay_char=0.08, delay_dot=0.15)
+time.sleep(1)
 clean_screen()
 
 choice = questionary.select(
-	"Selecione uma opção:",
+	"Select a option:",
 	choices=[
 		"Domain Search",
 		"Exit"
@@ -121,18 +111,18 @@ if choice == "Domain Search":
 	url = Prompt.ask("[dark_slate_gray2]URL[/]")
 	clean_screen()
 
-	console.print("[dark_slate_gray2]\nRunning Domain Search...[/]")
+	CONSOLE.print("[dark_slate_gray2]\nRunning Domain Search...[/]")
 
 	rows, err = run_domain_search(url)
 
 	if err:
-		console.print(f"[red1]Error:[/] {err}")
+		CONSOLE.print(f"[red1]Error:[/] {err}")
 
 	elif not rows:
-		console.print("[yellow]No domain searched.[/]")
+		CONSOLE.print("[yellow]No domain searched.[/]")
 
 	else:
 		show_domain_results(url, rows)
 
 elif choice == "Exit":
-	console.print("[dark_slate_gray2]\tSaindo...[/]")
+	CONSOLE.print("[dark_slate_gray2]\tSaindo...[/]")
