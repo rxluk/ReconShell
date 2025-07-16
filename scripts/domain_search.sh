@@ -16,5 +16,5 @@ for domain in $domains; do
 		continue
 	fi
 
-	echo -e "$ip $domain"
+	echo -e "$ip\t$domain"
 done
