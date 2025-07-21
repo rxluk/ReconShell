@@ -23,7 +23,7 @@ ascii_logo = r"""
 CONSOLE = Console()
 MENU_LOGO = Panel(ascii_logo, title="ReconShell", subtitle="by Luk", style="red1")
 BASE_DIR = Path(__file__).parent
-DOMAIN_SCRIPT = BASE_DIR / "scripts" / "domain_search.sh"
+DOMAIN_SCRIPT = BASE_DIR / "scripts" / "domain_scanner.sh"
 
 ## Utils
 
@@ -53,7 +53,7 @@ def clean_screen():
 
 ## Options Methods
 
-def run_domain_search(url: str):
+def run_domain_scanner(url: str):
 	cmd = ["/bin/bash", str(DOMAIN_SCRIPT), url]
 	proc = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -115,7 +115,7 @@ if choice == "[1] Domain Search":
 
 	CONSOLE.print("[yellow]Running Domain Search...[/yellow]")
 
-	rows, err = run_domain_search(url)
+	rows, err = run_domain_scanner(url)
 
 	if err:
 		CONSOLE.print(f"[red1]Error:[/] {err}")
